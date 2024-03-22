@@ -3,7 +3,7 @@
 ## How to get factsheet?
 
 The compiled pdf file together with a zip with .tex factsheet source files are located at
-factsheet/ dir
+[`factsheet`](./factsheet)
 
 ## How to test the baseline model?
 
