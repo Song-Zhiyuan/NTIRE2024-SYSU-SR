@@ -32,21 +32,7 @@ def select_model(args, device):
         model=HAT()
         load_net = torch.load(model_path, map_location=lambda storage, loc: storage)
         param_key = 'params_ema'
-        try:
-            load_net = load_net[param_key]
-        except:
-            pass
-        # remove unnecessary 'module.'
-        for k, v in deepcopy(load_net).items():
-            if k.startswith('module.'):
-                load_net[k[7:]] = v
-                load_net.pop(k)
-        if 'grl' or 'GRL' in model_path:
-            for k, v in deepcopy(load_net).items():
-                if k.startswith('model.'):
-                    load_net[k[6:]] = v
-                    load_net.pop(k)
-        model.load_state_dict(load_net, strict=True)
+        load_net = load_net[param_key]
 
     elif model_id == 14:
         from models.team14_HGD import EnsembleModel
@@ -65,7 +51,9 @@ def select_model(args, device):
     # Important !!!
     # ALL our models's inputs are whole image in the test stage,
     # With limited GPU memory, you can break it down by forward each model, 
-    # then call model_ensemble to get final results.
+    # then call model_ensemble to get reproduced results.
+    #
+    # Besides, you can set tile=256 and overlap=64 to run in limited GPU memory.
     """
     tile = None
     # tile = 256

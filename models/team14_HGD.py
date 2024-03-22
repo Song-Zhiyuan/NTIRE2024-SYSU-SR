@@ -3637,8 +3637,8 @@ class EnsembleModel(nn.Module):
 
     def ensemble(self, predictions):
         img_length = predictions[0].size(0)
-        w, h = predictions[0].size(2), predictions[0].size(3)
-        avg_imarr = torch.zeros((1,3, h, w), dtype=torch.float,device=predictions[0].device)
+        h, w = predictions[0].size(2), predictions[0].size(3)
+        avg_imarr = torch.zeros((1, 3, h, w), dtype=torch.float, device=predictions[0].device)
         model_cnt = len(predictions)
 
         # Compute average tensor
@@ -3652,15 +3652,17 @@ class EnsembleModel(nn.Module):
             weight.append(((predictions[k] - avg_imarr) ** 2).mean().item())
         weight = list(np.array(weight) * (-1))
 
-        if max(weight) - min(weight) == 0:
-            norm_weight = [1.0 / len(weight)] * len(weight)
+        if len(set(weight)) < 2:
+            norm_weight = [1.0 /model_cnt for i in range(model_cnt)]
+
         else:
             norm_weight = [(float(i) - min(weight)) / (max(weight) - min(weight)) for i in weight]
+        print(norm_weight)
         norm_weight = normalize([norm_weight], norm="l1")[0]
-        norm_weight_tensor = torch.tensor(norm_weight, dtype=torch.float,device=predictions[0].device)
+        norm_weight_tensor = torch.tensor(norm_weight, dtype=torch.float, device=predictions[0].device)
 
         # Compute ensemble tensor
-        ensemble_tensor = torch.zeros((img_length, 3, h, w), dtype=torch.float,device=predictions[0].device)
+        ensemble_tensor = torch.zeros((img_length, 3, h, w), dtype=torch.float, device=predictions[0].device)
         for k in range(model_cnt):
             ensemble_tensor += norm_weight_tensor[k] * predictions[k]
         return ensemble_tensor
