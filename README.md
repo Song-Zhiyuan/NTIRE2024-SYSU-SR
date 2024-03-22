@@ -15,7 +15,7 @@ The compiled pdf file together with a zip with .tex factsheet source files are l
     - Be sure the change the directories `--data_dir` and `--save_dir`.
     - We provide MODEL (team14): SYSU-SR(HGD) The code and pretrained models of the three models are provided. Switch models through commenting the code in [test_demo.py](./test_demo.py#L19). Three baselines are all test normally with `run.sh`.
 
-## How to add download the pretrained model?
+## How to download the pretrained model?
 
 We put the link in `./model_zoo/team14_HGD.txt`: e.g. [team14_HGD.txt](model_zoo/team14_HGD.txt) for download the pretrained models
 
