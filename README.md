@@ -15,24 +15,14 @@ The compiled pdf file together with a zip with .tex factsheet source files are l
     - Be sure the change the directories `--data_dir` and `--save_dir`.
     - We provide MODEL (team14): SYSU-SR(HGD) The code and pretrained models of the three models are provided. Switch models through commenting the code in [test_demo.py](./test_demo.py#L19). Three baselines are all test normally with `run.sh`.
 
-## How to add your model to this baseline?
-1. Our team ID is 14.
-2. Put your the code of your model in `./models/[Your_Team_ID]_[Your_Model_Name].py`
-   - Please add **only one** file in the folder `./models`. **Please do not add other submodules**.
-   - Please zero pad [Your_Team_ID] into two digits: e.g. 00, 01, 02 
-3. Put the pretrained model in `./model_zoo/[Your_Team_ID]_[Your_Model_Name].[pth or pt or ckpt]`
-   - Please zero pad [Your_Team_ID] into two digits: e.g. 00, 01, 02
-   - Note:  Please provide a download link for the pretrained model, if the file size exceeds **100 MB**. Put the link in `./model_zoo/[Your_Team_ID]_[Your_Model_Name].txt`: e.g. [team14_HGD.txt](model_zoo/team14_HGD.txt)
-4. Add your model to the model loader `./test_demo/select_model` as follows:
-    ```python
-        elif model_id == [Your_Team_ID]:
-            # define your model and load the checkpoint
-    ```
-   - Note: Please set the correct data_range, either 255.0 or 1.0
-5. Send us the command to download your code, e.g, 
-   - `git clone [Your repository link]`
-   - We will do the following steps to add your code and model checkpoint to the repository.
-   
+## How to add download the pretrained model?
+
+We put the link in `./model_zoo/team14_HGD.txt`: e.g. [team14_HGD.txt](model_zoo/team14_HGD.txt) for download the pretrained models
+
+## How to download our testing results?
+
+We put the link in [url](https://drive.google.com/file/d/1kzTd4cNrL_LZI4HnYaxepTdXwOdWOE2z/view?usp=drive_link) for download our results
+
 ## How to calculate the number of parameters, FLOPs
 
 ```python

@@ -4,3 +4,4 @@ __pycache__/
 *.ckpt
 NTIRE2023_ImageSR_X4/
 *.log
+debug*
