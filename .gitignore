@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.pth
+*.ckpt
+NTIRE2023_ImageSR_X4/
+*.log
