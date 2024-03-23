@@ -3651,13 +3651,10 @@ class EnsembleModel(nn.Module):
         for k in range(model_cnt):
             weight.append(((predictions[k] - avg_imarr) ** 2).mean().item())
         weight = list(np.array(weight) * (-1))
-
-        if len(set(weight)) < 2:
+        if  (max(weight) - min(weight)) < 1e-4:
             norm_weight = [1.0 /model_cnt for i in range(model_cnt)]
-
         else:
             norm_weight = [(float(i) - min(weight)) / (max(weight) - min(weight)) for i in weight]
-        print(norm_weight)
         norm_weight = normalize([norm_weight], norm="l1")[0]
         norm_weight_tensor = torch.tensor(norm_weight, dtype=torch.float, device=predictions[0].device)
 
