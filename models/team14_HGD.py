@@ -3631,11 +3631,17 @@ class EnsembleModel(nn.Module):
             self.model2.eval()
             self.model3.eval()
             output1 = self.model1(input_data)
+            print(output1.shape)
             output2 = self.model2(input_data)
             output3 = self.model3(input_data)
         return [output1,output2,output3]
 
     def ensemble(self, predictions):
+        """
+        # Important !!!
+        # we initially use numpy[0,255] of images for model_ensemble in test stage,
+        # but in order to match the api, we create model_ensemble for tensor[0,1], which may have some differences! 
+        """
         img_length = predictions[0].size(0)
         h, w = predictions[0].size(2), predictions[0].size(3)
         avg_imarr = torch.zeros((1, 3, h, w), dtype=torch.float, device=predictions[0].device)
