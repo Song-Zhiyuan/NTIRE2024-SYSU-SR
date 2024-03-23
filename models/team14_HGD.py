@@ -3639,8 +3639,8 @@ class EnsembleModel(nn.Module):
     def ensemble(self, predictions):
         """
         # Important !!!
-        # we initially use numpy[0,255] of images for model_ensemble in test stage,
-        # but in order to match the api, we create model_ensemble for tensor[0,1], which may have some differences! 
+        # we initially get all raw images from all models first, then use numpy[0,255] of images for model_ensemble to get final fused image in test stage,
+        # but in order to match the API, we create model_ensemble for tensor[0,1], then directly get the final fused image, which may have some differences 
         """
         img_length = predictions[0].size(0)
         h, w = predictions[0].size(2), predictions[0].size(3)
