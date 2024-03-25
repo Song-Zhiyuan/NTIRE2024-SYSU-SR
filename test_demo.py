@@ -99,7 +99,7 @@ def select_dataset(data_dir, mode):
 def forward(img_lq, model, tile=None, tile_overlap=64, scale=4):
     if tile is None:
         # test the image as a whole
-        print(img_lq.shape)
+        print("test the image as a whole",img_lq.shape)
         output = model(img_lq)
     else:
         # test the image tile by tile

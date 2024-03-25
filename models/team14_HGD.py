@@ -931,6 +931,7 @@ class DAT(nn.Module):
     def forward(self, x):
         forward_function = self.forward_x1
         return self.forward_x8(x, forward_function=forward_function)
+        # return self.forward_x1(x)
 
 import torch
 import torch.nn as nn
@@ -2225,16 +2226,16 @@ class GRL(nn.Module):
         depths=[4, 4, 8, 8, 8, 4, 4],
         num_heads_window=[3, 3, 3, 3, 3, 3, 3],
         num_heads_stripe=[3, 3, 3, 3, 3, 3, 3],
-        window_size=8,
-        stripe_size=[8, None],  # used for stripe window attention
-        stripe_groups=[None, 4],
+        window_size=32,
+        stripe_size=[64, 64],  # used for stripe window attention
+        stripe_groups=[None, None],
         stripe_shift=True,
         mlp_ratio=2.0,
         qkv_bias=True,
         qkv_proj_type="linear",
         anchor_proj_type="avgpool",
         anchor_one_stage=True,
-        anchor_window_down_factor=4,
+        anchor_window_down_factor=2,
         out_proj_type="linear",
         local_connection=True,
         drop_rate=0.0,
@@ -2245,7 +2246,7 @@ class GRL(nn.Module):
         pretrained_stripe_size=[0, 0],
         conv_type="1conv",
         init_method="n",  # initialization method of the weight parameters used to train large scale models.
-        fairscale_checkpoint=False,  # fairscale activation checkpointing
+        fairscale_checkpoint=True,  # fairscale activation checkpointing
         offload_to_cpu=False,
         euclidean_dist=False,
         **kwargs,
@@ -2489,7 +2490,6 @@ class GRL(nn.Module):
         x = bchw_to_blc(x)
         x = self.norm_start(x)
         x = self.pos_drop(x)
-
         table_index_mask = self.get_table_index_mask(x.device, x_size)
         for layer in self.layers:
             x = layer(x, x_size, table_index_mask)
@@ -3638,9 +3638,7 @@ class EnsembleModel(nn.Module):
         self.img = F.pad(self.lq, (0, self.mod_pad_w, 0, self.mod_pad_h), 'reflect')
 
     def post_process(self):
-        _, _, h, w = self.output1.size()
-        self.output1 = self.output1[:, :, 0:h - self.mod_pad_h * self.scale, 0:w - self.mod_pad_w * self.scale]
-        self.output2 = self.output2[:, :, 0:h - self.mod_pad_h * self.scale, 0:w - self.mod_pad_w * self.scale]
+        _, _, h, w = self.output3.size()
         self.output3 = self.output3[:, :, 0:h - self.mod_pad_h * self.scale, 0:w - self.mod_pad_w * self.scale]
 
     def predict(self, input_data):
@@ -3650,11 +3648,11 @@ class EnsembleModel(nn.Module):
             self.model3.eval()
             self.lq=input_data
             self.pre_process()
-            self.output1 = self.model1(self.img)
-            self.output2 = self.model2(self.img)
+            self.output1 = self.model1(self.lq)
+            self.output2 = self.model2(self.lq)
             self.output3 = self.model3(self.img)
             self.post_process()
-
+            
         return [self.output1,self.output2,self.output3]
 
     def ensemble(self, predictions):
