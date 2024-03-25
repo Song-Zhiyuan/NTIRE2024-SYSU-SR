@@ -3624,17 +3624,38 @@ class EnsembleModel(nn.Module):
         current_grl_state_dict.update(grl)
         self.model2.load_state_dict(current_grl_state_dict, strict=True)
         self.model3.load_state_dict(hat, strict=True)
+        
+    def pre_process(self):
+        # pad to multiplication of window_size
+        window_size = 16
+        self.scale = 4
+        self.mod_pad_h, self.mod_pad_w = 0, 0
+        _, _, h, w = self.lq.size()
+        if h % window_size != 0:
+            self.mod_pad_h = window_size - h % window_size
+        if w % window_size != 0:
+            self.mod_pad_w = window_size - w % window_size
+        self.img = F.pad(self.lq, (0, self.mod_pad_w, 0, self.mod_pad_h), 'reflect')
+
+    def post_process(self):
+        _, _, h, w = self.output1.size()
+        self.output1 = self.output1[:, :, 0:h - self.mod_pad_h * self.scale, 0:w - self.mod_pad_w * self.scale]
+        self.output2 = self.output2[:, :, 0:h - self.mod_pad_h * self.scale, 0:w - self.mod_pad_w * self.scale]
+        self.output3 = self.output3[:, :, 0:h - self.mod_pad_h * self.scale, 0:w - self.mod_pad_w * self.scale]
 
     def predict(self, input_data):
         with torch.no_grad():
             self.model1.eval()
             self.model2.eval()
             self.model3.eval()
-            output1 = self.model1(input_data)
-            print(output1.shape)
-            output2 = self.model2(input_data)
-            output3 = self.model3(input_data)
-        return [output1,output2,output3]
+            self.lq=input_data
+            self.pre_process()
+            self.output1 = self.model1(self.img)
+            self.output2 = self.model2(self.img)
+            self.output3 = self.model3(self.img)
+            self.post_process()
+
+        return [self.output1,self.output2,self.output3]
 
     def ensemble(self, predictions):
         """
