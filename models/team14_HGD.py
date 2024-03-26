@@ -3676,7 +3676,7 @@ class EnsembleModel(nn.Module):
         for k in range(model_cnt):
             weight.append(((predictions[k] - avg_imarr) ** 2).mean().item())
         weight = list(np.array(weight) * (-1))
-        if  (max(weight) - min(weight)) < 1e-4:
+        if  (max(weight) - min(weight)) < 1e-4 or np.isnan(max(weight)) or np.isnan(min(weight)):
             norm_weight = [1.0 /model_cnt for i in range(model_cnt)]
         else:
             norm_weight = [(float(i) - min(weight)) / (max(weight) - min(weight)) for i in weight]
