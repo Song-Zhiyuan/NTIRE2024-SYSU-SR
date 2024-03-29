@@ -2,6 +2,6 @@
 __pycache__/
 *.pth
 *.ckpt
-NTIRE2023_ImageSR_X4/
+*.png
 *.log
 debug*
