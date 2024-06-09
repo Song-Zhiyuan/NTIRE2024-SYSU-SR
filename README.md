@@ -1,5 +1,8 @@
 # [NTIRE 2024 Challenge on Image Super-Resolution (x4)](https://cvlai.net/ntire/2024/) @ [CVPR 2024](https://cvpr.thecvf.com/)
 
+## How to find the NTIRE 2024 Challenge on Image Super-Resolution(x4) paper?
+[NTIRE 2024 Challenge on Image Super-Resolution (×4): Methods and Results](https://arxiv.org/abs/2404.09790)
+
 ## How to get factsheet?
 
 The compiled pdf file together with a zip with .tex factsheet source files are located at
